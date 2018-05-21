@@ -1,19 +1,19 @@
 package com.royale.titans.hera.utils.binary;
 
 public class VInt {
-    private final int value;
-    private final int length;
+    private final int mValue;
+    private final int mLength;
 
     public VInt(int value, int length) {
-        this.value = value;
-        this.length = length;
+        mValue = value;
+        mLength = length;
     }
 
     public int getValue() {
-        return value;
+        return mValue;
     }
 
     public int getLength() {
-        return length;
+        return mLength;
     }
 }

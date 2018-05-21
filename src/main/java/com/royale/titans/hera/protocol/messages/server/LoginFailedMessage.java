@@ -17,43 +17,31 @@ import java.io.IOException;
 
 public class LoginFailedMessage extends PiranhaMessage {
 
-    public VInt errorCode;
-    public String fingerprint;
+    public VInt mErrorCode;
+    public String mFingerprint;
 
-    public int unk_0;
-    public int unk_1;
-    public int unk_2;
-    public int unk_3;
-    public int unk_4;
-    public int unk_5;
-    public int unk_6;
-
-    public String assetsUrl;
-    public String patchingHost;
+    public String mAssetsUrl;
+    public String mPatchingHost;
 
     public LoginFailedMessage(ByteStream stream) {
         super(stream);
 
-        this.errorCode = stream.readVInt();
-        Debugger.info(this.errorCode.getValue());
-
-        this.fingerprint = stream.readString();
+        mErrorCode = stream.readVInt();
+        mFingerprint = stream.readString();
 
         stream.readString();
 
-        this.assetsUrl = stream.readString();
-        this.patchingHost = stream.readString();
+        mAssetsUrl = stream.readString();
+        mPatchingHost = stream.readString();
     }
 
     @Override
     public void process() {
-        switch (this.errorCode.getValue()) {
+        switch (mErrorCode.getValue()) {
             case 7: {
-                // Patch
-
                 try {
                     FileOutputStream writer = new FileOutputStream(new File("fingerprint.json"));
-                    writer.write(this.fingerprint.getBytes());
+                    writer.write(mFingerprint.getBytes());
                     writer.close();
 
                     Resources.fingerprint = Fingerprint.read();
@@ -68,8 +56,11 @@ public class LoginFailedMessage extends PiranhaMessage {
                 break;
             }
             case 8: {
-                // Client update
-
+                Debugger.info("Client is outdated.");
+                break;
+            }
+            case 10: {
+                Debugger.info("Server is in maintenance.");
                 break;
             }
             default: {

@@ -34,9 +34,9 @@ public class MessageManager {
             }
         }
 
-        message.id = id;
+        message.setId(id);
 
-        Debugger.info("Received " + message.getClass().getSimpleName() + " (" + message.id + ")");
+        Debugger.info("Received " + message.getClass().getSimpleName() + " (" + message.getId() + ")");
 
         message.process();
 

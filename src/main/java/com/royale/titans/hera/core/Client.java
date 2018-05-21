@@ -2,7 +2,7 @@ package com.royale.titans.hera.core;
 
 import com.royale.titans.hera.Configuration;
 import com.royale.titans.hera.crypto.sodium.ClientCrypto;
-import com.royale.titans.hera.logic.Player;
+import com.royale.titans.hera.logic.Account;
 import com.royale.titans.hera.logic.enums.ClientState;
 import com.royale.titans.hera.protocol.MessageManager;
 import com.royale.titans.hera.protocol.PiranhaMessage;
@@ -29,9 +29,9 @@ public class Client extends Thread {
             socket = new Socket();
             socket.connect(new InetSocketAddress("game.clashroyaleapp.com", 9339));
 
-            Client.info.state = ClientState.CONNECTED;
+            Client.info.setState(ClientState.CONNECTED);
 
-            if (Client.info.state == ClientState.CONNECTED)
+            if (Client.info.getState() == ClientState.CONNECTED)
                 send(new ClientHelloMessage());
 
             socket.close();
@@ -49,7 +49,7 @@ public class Client extends Thread {
 
             writer.write(buffer);
 
-            Debugger.info("Sent " + message.getClass().getSimpleName() + " (" + message.id + ")");
+            Debugger.info("Sent " + message.getClass().getSimpleName() + " (" + message.getId() + ")");
 
             receive();
         } catch (IOException e) {
@@ -79,28 +79,34 @@ public class Client extends Thread {
     public static class ClientInfo {
         public ClientCrypto crypto;
 
-        public String androidId = "0d2c46b3-361b-4a76-aee0-f22032f1ce01";
+        public String androidId = "";
 
         public String region = "en-US";
 
-        public String openUDID = "4699c1d58f3532c1";
-        public String model = "ClashRoyale.Client";
+        public String openUDID = "";
+        public String model = "Hera";
         public String osVersion = "1.0";
-        public String macAddress = "e859e074-c4cb-1602-8227-c7de1ec71abc";
+        public String macAddress = "";
         public String advertiseId = "";
         public String vendorId = "";
 
         public boolean android = true;
         public boolean advertising = false;
 
-        public Player player;
+        private final Account mAccount;
 
-        public ClientState state;
+        private ClientState mState;
 
         public ClientInfo() {
-            this.player = new Player();
+            mAccount = new Account();
 
-            this.crypto = new ClientCrypto(Configuration.SERVER_KEY);
+            crypto = new ClientCrypto(Configuration.SERVER_KEY);
         }
+
+        public ClientState getState() { return mState; }
+
+        public void setState(ClientState state) { mState = state; }
+
+        public Account getAccount() { return mAccount; }
     }
 }

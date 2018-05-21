@@ -6,18 +6,42 @@ import java.lang.reflect.Field;
 
 public class PiranhaMessage {
 
-    public short id;
-    public int length;
-    public int version;
+    private short mId;
+    private int mLength;
+    private int mVersion;
 
-    public ByteStream stream;
+    private ByteStream mStream;
 
     public PiranhaMessage(short id) {
-        this.id = id;
+        setId(id);
     }
 
     public PiranhaMessage(ByteStream stream) {
-        this.stream = stream;
+        mStream = stream;
+    }
+
+    public short getId() {
+        return mId;
+    }
+
+    public void setId(short id) {
+        mId = id;
+    }
+
+    public int getLength() {
+        return mLength;
+    }
+
+    public void setLength(int length) {
+        mLength = length;
+    }
+
+    public int getVersion() {
+        return mVersion;
+    }
+
+    public void setVersion(int version) {
+        mVersion = version;
     }
 
     public ByteStream encode() {
@@ -30,13 +54,13 @@ public class PiranhaMessage {
     public byte[] toBytes(byte[] data) {
         ByteStream stream = new ByteStream();
 
-        this.length = data.length;
+        mLength = data.length;
 
-        stream.writeShort(this.id);
-        stream.write((byte) (this.length >>> 16));
-        stream.write((byte) (this.length >>> 8));
-        stream.write((byte) this.length);
-        stream.writeShort(this.version);
+        stream.writeShort(mId);
+        stream.write((byte) (mLength >>> 16));
+        stream.write((byte) (mLength >>> 8));
+        stream.write((byte) mLength);
+        stream.writeShort(mVersion);
         stream.write(data);
 
         return stream.obtain().array();

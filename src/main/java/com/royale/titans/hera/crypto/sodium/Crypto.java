@@ -6,24 +6,24 @@ import com.royale.titans.hera.protocol.PiranhaMessage;
 import com.royale.titans.hera.utils.binary.ByteStream;
 
 public abstract class Crypto {
-    protected byte[] privateKey = new byte[TweetNaCl.SIGN_PUBLIC_KEY_BYTES];
-    protected byte[] serverKey;
-    protected byte[] clientKey = new byte[TweetNaCl.SIGN_SECRET_KEY_BYTES];
-    protected byte[] sharedKey;
-    protected Nonce decryptNonce = new Nonce();
-    protected Nonce encryptNonce = new Nonce();
-    protected byte[] sessionKey;
+    protected byte[] mPrivateKey = new byte[TweetNaCl.SIGN_PUBLIC_KEY_BYTES];
+    protected byte[] mServerKey;
+    protected byte[] mClientKey = new byte[TweetNaCl.SIGN_SECRET_KEY_BYTES];
+    protected byte[] mSharedKey;
+    protected Nonce mDecryptNonce = new Nonce();
+    protected Nonce mEncryptNonce = new Nonce();
+    protected byte[] mSessionKey;
 
     public byte[] getSessionKey() {
-        return sessionKey;
+        return mSessionKey;
     }
 
     public void setSessionKey(byte[] sessionKey) {
-        this.sessionKey = sessionKey;
+        mSessionKey = sessionKey;
     }
 
     public byte[] getSharedKey() {
-        return sharedKey;
+        return mSharedKey;
     }
 
     public void setSharedKey(byte[] sharedKey) {
@@ -31,7 +31,7 @@ public abstract class Crypto {
             Exceptions.throwException("sharedKey.length must be 32", ExceptionType.CRYPTO);
         }
 
-        this.sharedKey = sharedKey;
+        mSharedKey = sharedKey;
     }
 
     public ByteStream encrypt(byte[] message) {
@@ -40,11 +40,11 @@ public abstract class Crypto {
 
     public ByteStream encrypt(byte[] message, Nonce nonce) {
         if (nonce == null) {
-            encryptNonce.increment();
-            nonce = encryptNonce;
+            mEncryptNonce.increment();
+            nonce = mEncryptNonce;
         }
 
-        return ByteStream.wrap(TweetNaCl.secretbox(message, nonce.getBytes(), sharedKey));
+        return ByteStream.wrap(TweetNaCl.secretbox(message, nonce.getBytes(), mSharedKey));
     }
 
     public ByteStream decrypt(byte[] message) {
@@ -53,11 +53,11 @@ public abstract class Crypto {
 
     public ByteStream decrypt(byte[] message, Nonce nonce) {
         if (nonce == null) {
-            decryptNonce.increment();
-            nonce = decryptNonce;
+            mDecryptNonce.increment();
+            nonce = mDecryptNonce;
         }
 
-        return ByteStream.wrap(TweetNaCl.secretbox_open(message, nonce.getBytes(), sharedKey));
+        return ByteStream.wrap(TweetNaCl.secretbox_open(message, nonce.getBytes(), mSharedKey));
     }
 
     public abstract ByteStream decryptPacket(short id, byte[] message);

@@ -17,8 +17,8 @@ public class LoginMessage extends PiranhaMessage {
     public ByteStream encode() {
         ByteStream stream = new ByteStream();
 
-        stream.writeLong(Client.info.player.accountId);
-        stream.writeString(Client.info.player.token);
+        stream.writeLong(Client.info.getAccount().getAccountId());
+        stream.writeString(Client.info.getAccount().getToken());
 
         stream.writeVInt(Integer.parseInt(Resources.version[0]));
         stream.writeVInt(Integer.parseInt(Resources.version[2]));
