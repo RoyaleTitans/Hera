@@ -7,7 +7,7 @@ public class Configuration {
 
     public static final int KEY_VERSION = 16;
 
-    public static final boolean DOWNLOAD_MODE = true;
+    public static final boolean DOWNLOAD_MODE = false;
     public static final boolean ENABLE_BLACKLIST = true;
 
     public static final String CDN_URL = "https://99faf1e355c749a9a049-2a63f4436c967aa7d355061bd0d924a1.ssl.cf1.rackcdn.com";

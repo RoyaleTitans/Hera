@@ -1,7 +1,7 @@
 package com.royale.titans.hera.core;
 
-import com.royale.titans.hera.Configuration;
 import com.royale.titans.hera.crypto.sodium.ClientCrypto;
+import com.royale.titans.hera.crypto.sodium.ServerCrypto;
 import com.royale.titans.hera.logic.Account;
 import com.royale.titans.hera.logic.enums.ClientState;
 import com.royale.titans.hera.protocol.MessageManager;
@@ -44,7 +44,7 @@ public class Client extends Thread {
         try {
             DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
 
-            byte[] encrypted = info.crypto.encryptPacket(message).array();
+            byte[] encrypted = info.getClientCrypto().encrypt(message);
             byte[] buffer = message.toBytes(encrypted);
 
             writer.write(buffer);
@@ -77,7 +77,14 @@ public class Client extends Thread {
     }
 
     public static class ClientInfo {
-        public ClientCrypto crypto;
+        private ClientCrypto mClientCrypto;
+        private ServerCrypto mServerCrypto;
+
+        private byte[] mSessionKey;
+
+        private final Account mAccount;
+
+        private ClientState mState;
 
         public String androidId = "";
 
@@ -93,20 +100,39 @@ public class Client extends Thread {
         public boolean android = true;
         public boolean advertising = false;
 
-        private final Account mAccount;
-
-        private ClientState mState;
-
         public ClientInfo() {
-            mAccount = new Account();
+            mClientCrypto = new ClientCrypto();
+            mServerCrypto = new ServerCrypto();
 
-            crypto = new ClientCrypto(Configuration.SERVER_KEY);
+            mAccount = new Account();
         }
 
-        public ClientState getState() { return mState; }
+        public ClientState getState() {
+            return mState;
+        }
 
-        public void setState(ClientState state) { mState = state; }
+        public void setState(ClientState state) {
+            mState = state;
+        }
 
-        public Account getAccount() { return mAccount; }
+        public byte[] getSessionKey() {
+            return mSessionKey;
+        }
+
+        public void setSessionKey(byte[] sessionKey) {
+            mSessionKey = sessionKey;
+        }
+
+        public ClientCrypto getClientCrypto() {
+            return mClientCrypto;
+        }
+
+        public ServerCrypto getServerCrypto() {
+            return mServerCrypto;
+        }
+
+        public Account getAccount() {
+            return mAccount;
+        }
     }
 }

@@ -5,7 +5,7 @@ public class Asset {
     private final String mHash;
     private final String mName;
 
-    public Asset(String hash, String name) {
+    protected Asset(String hash, String name) {
         mHash = hash;
         mName = name;
     }

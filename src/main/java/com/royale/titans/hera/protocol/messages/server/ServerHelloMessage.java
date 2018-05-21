@@ -9,19 +9,19 @@ import com.royale.titans.hera.utils.binary.Hex;
 
 public class ServerHelloMessage extends PiranhaMessage {
 
-    public byte[] sessionKey;
+    private byte[] mSessionKey;
 
     public ServerHelloMessage(ByteStream stream) {
         super(stream);
 
-        this.sessionKey = stream.readArray();
+        mSessionKey = stream.readArray();
     }
 
     @Override
     public void process() {
-        Client.info.crypto.setSessionKey(this.sessionKey);
+        Client.info.setSessionKey(mSessionKey);
 
-        Debugger.debug("Session Key : " + Hex.toString(this.sessionKey) + "\n");
+        Debugger.debug("Session Key : " + Hex.toString(mSessionKey) + "\n");
 
         Client.send(new LoginMessage());
     }

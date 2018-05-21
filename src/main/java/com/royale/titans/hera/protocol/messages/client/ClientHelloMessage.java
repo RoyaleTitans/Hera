@@ -21,7 +21,7 @@ public class ClientHelloMessage extends PiranhaMessage {
 
         stream.writeInt(2);
         stream.writeInt(Configuration.KEY_VERSION);
-        this.setVersion(stream);
+        setVersion(stream);
         stream.writeInt(2);
         stream.writeInt(2);
 

@@ -6,7 +6,7 @@ import com.royale.titans.hera.logic.slots.Exceptions;
 public class RC4 {
     private final byte[] s = new byte[256];
     private final byte[] t = new byte[256];
-    private int keylen;
+    private int keyLength;
 
     public RC4(String key) {
         this(stringToByteArray(key));
@@ -16,10 +16,10 @@ public class RC4 {
         if (key.length < 1 || key.length > 256) {
             Exceptions.throwException("key must be between 1 and 256 bytes", ExceptionType.CRYPTO);
         } else {
-            keylen = key.length;
+            keyLength = key.length;
             for (int i = 0; i < 256; i++) {
                 s[i] = (byte) i;
-                t[i] = key[i % keylen];
+                t[i] = key[i % keyLength];
             }
 
             int j = 0;
@@ -33,12 +33,12 @@ public class RC4 {
         }
     }
 
-    public byte[] encrypt(final byte[] plaintext) {
-        final byte[] ciphertext = new byte[plaintext.length];
+    public byte[] encrypt(final byte[] plainText) {
+        final byte[] cipherText = new byte[plainText.length];
         int i = 0, j = 0, k, t;
         byte tmp;
 
-        for (int counter = 0; counter < plaintext.length; counter++) {
+        for (int counter = 0; counter < plainText.length; counter++) {
             i = (i + 1) & 0xFF;
             j = (j + s[i]) & 0xFF;
             tmp = s[j];
@@ -46,14 +46,14 @@ public class RC4 {
             s[i] = tmp;
             t = (s[i] + s[j]) & 0xFF;
             k = s[t];
-            ciphertext[counter] = (byte) (plaintext[counter] ^ k);
+            cipherText[counter] = (byte) (plainText[counter] ^ k);
         }
 
-        return ciphertext;
+        return cipherText;
     }
 
-    public byte[] decrypt(final byte[] ciphertext) {
-        return encrypt(ciphertext);
+    public byte[] decrypt(final byte[] cipherText) {
+        return encrypt(cipherText);
     }
 
     private static byte[] stringToByteArray(String str) {

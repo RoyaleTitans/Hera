@@ -33,8 +33,9 @@ public class Hex {
     public static byte[] concatBytes(byte[]... bytes) {
         int length = 0;
 
-        for (byte[] b : bytes)
+        for (byte[] b : bytes) {
             length += b.length;
+        }
 
         byte[] result = new byte[length];
 

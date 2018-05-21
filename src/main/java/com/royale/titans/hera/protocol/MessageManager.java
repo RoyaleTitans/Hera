@@ -13,7 +13,7 @@ public class MessageManager {
     public static PiranhaMessage receiveMessage(short id, ByteStream stream) {
         PiranhaMessage message = null;
 
-        ByteStream decrypted = Client.info.crypto.decryptPacket(id, stream.array());
+        ByteStream decrypted = ByteStream.wrap(Client.info.getClientCrypto().decrypt(id, stream.array()));
 
         switch (id) {
             case 20100: {

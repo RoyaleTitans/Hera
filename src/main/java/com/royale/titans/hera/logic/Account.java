@@ -12,8 +12,8 @@ public class Account {
     private String mToken;
 
     public Account() {
-        int[] ids = TagUtils.tag2HighLow("");
-        setAccountId(TagUtils.tag2Id(""));
+        int[] ids = TagUtils.tag2HighLow("#2PP");
+        setAccountId(TagUtils.tag2Id("#2PP"));
 
         setHighId(ids[0]);
         setLowId(ids[1]);
@@ -40,7 +40,9 @@ public class Account {
         return mToken;
     }
 
-    public void setToken(String token) { mToken = token; }
+    public void setToken(String token) {
+        mToken = token;
+    }
 
     public long getAccountId() {
         return mAccountId;
