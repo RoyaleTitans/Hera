@@ -1,7 +1,6 @@
 package com.royale.titans.hera.definitions;
 
 public class Asset {
-
     private final String mHash;
     private final String mName;
 

@@ -3,7 +3,6 @@ package com.royale.titans.hera.logic;
 import com.royale.titans.hera.utils.TagUtils;
 
 public class Account {
-
     private long mHighId;
     private long mLowId;
 

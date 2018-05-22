@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class LoginFailedMessage extends PiranhaMessage {
-
     public VInt mErrorCode;
     public String mFingerprint;
 

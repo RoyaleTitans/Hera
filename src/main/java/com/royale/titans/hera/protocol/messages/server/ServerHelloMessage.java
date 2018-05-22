@@ -8,7 +8,6 @@ import com.royale.titans.hera.utils.binary.ByteStream;
 import com.royale.titans.hera.utils.binary.Hex;
 
 public class ServerHelloMessage extends PiranhaMessage {
-
     private byte[] mSessionKey;
 
     public ServerHelloMessage(ByteStream stream) {

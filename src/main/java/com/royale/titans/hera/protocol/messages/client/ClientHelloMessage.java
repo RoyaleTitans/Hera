@@ -8,7 +8,6 @@ import com.royale.titans.hera.utils.binary.ByteStream;
 import java.io.File;
 
 public class ClientHelloMessage extends PiranhaMessage {
-
     private static final short ID = 10100;
 
     public ClientHelloMessage() {

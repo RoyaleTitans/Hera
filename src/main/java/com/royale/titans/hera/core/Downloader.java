@@ -14,7 +14,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 public class Downloader {
-
     public static void start() throws IOException {
         Fingerprint fingerprint = Resources.fingerprint;
 

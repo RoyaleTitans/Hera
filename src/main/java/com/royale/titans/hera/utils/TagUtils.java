@@ -1,7 +1,6 @@
 package com.royale.titans.hera.utils;
 
 public class TagUtils {
-
     public static String id2Tag(long id) {
         String hashtag = "";
 

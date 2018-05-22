@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class ByteStream {
-
     private ByteBuffer mBuffer;
 
     private final ByteArrayOutputStream mStream = new ByteArrayOutputStream();

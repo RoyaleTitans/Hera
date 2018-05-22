@@ -4,7 +4,6 @@ import com.royale.titans.hera.logic.enums.ExceptionType;
 import com.royale.titans.hera.utils.Debugger;
 
 public class Exceptions {
-
     public static void throwException(String message, ExceptionType type) {
         try {
             switch (type) {

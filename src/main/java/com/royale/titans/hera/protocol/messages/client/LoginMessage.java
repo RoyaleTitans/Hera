@@ -6,7 +6,6 @@ import com.royale.titans.hera.protocol.PiranhaMessage;
 import com.royale.titans.hera.utils.binary.ByteStream;
 
 public class LoginMessage extends PiranhaMessage {
-
     private static final short ID = 10101;
 
     public LoginMessage() {
@@ -27,18 +26,18 @@ public class LoginMessage extends PiranhaMessage {
 
         stream.writeInt(0);
 
-        stream.writeString(Client.info.openUDID);
-        stream.writeString(Client.info.macAddress);
-        stream.writeString(Client.info.model);
-        stream.writeString(Client.info.advertiseId);
-        stream.writeString(Client.info.osVersion);
+        stream.writeString(Client.ClientInfo.openUDID);
+        stream.writeString(Client.ClientInfo.macAddress);
+        stream.writeString(Client.ClientInfo.model);
+        stream.writeString(Client.ClientInfo.advertiseId);
+        stream.writeString(Client.ClientInfo.osVersion);
 
         stream.write((byte) 1);
 
         stream.writeInt(0);
 
-        stream.writeString(Client.info.androidId);
-        stream.writeString(Client.info.region);
+        stream.writeString(Client.ClientInfo.androidId);
+        stream.writeString(Client.ClientInfo.region);
 
         stream.writeString("");
         stream.write((byte) 1);

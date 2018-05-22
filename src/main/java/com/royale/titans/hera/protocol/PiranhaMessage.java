@@ -5,7 +5,6 @@ import com.royale.titans.hera.utils.binary.ByteStream;
 import java.lang.reflect.Field;
 
 public class PiranhaMessage {
-
     private short mId;
     private int mLength;
     private int mVersion;

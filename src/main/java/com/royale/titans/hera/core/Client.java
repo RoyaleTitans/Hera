@@ -1,5 +1,7 @@
 package com.royale.titans.hera.core;
 
+import com.neilalexander.jnacl.crypto.curve25519xsalsa20poly1305;
+import com.royale.titans.hera.Configuration;
 import com.royale.titans.hera.crypto.sodium.ClientCrypto;
 import com.royale.titans.hera.crypto.sodium.ServerCrypto;
 import com.royale.titans.hera.logic.Account;
@@ -44,7 +46,7 @@ public class Client extends Thread {
         try {
             DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
 
-            byte[] encrypted = info.getClientCrypto().encrypt(message);
+            byte[] encrypted = Client.info.getClientCrypto().encryptPacket(message.getId(), message.encode().array());
             byte[] buffer = message.toBytes(encrypted);
 
             writer.write(buffer);
@@ -86,23 +88,26 @@ public class Client extends Thread {
 
         private ClientState mState;
 
-        public String androidId = "";
+        public static String androidId = "";
 
-        public String region = "en-US";
+        public static String region = "en-US";
 
-        public String openUDID = "";
-        public String model = "Hera";
-        public String osVersion = "1.0";
-        public String macAddress = "";
-        public String advertiseId = "";
-        public String vendorId = "";
+        public static String openUDID = "";
+        public static String model = "Hera";
+        public static String osVersion = "1.0";
+        public static String macAddress = "";
+        public static String advertiseId = "";
+        public static String vendorId = "";
 
-        public boolean android = true;
-        public boolean advertising = false;
+        public static boolean android = true;
+        public static boolean advertising = false;
 
         public ClientInfo() {
-            mClientCrypto = new ClientCrypto();
-            mServerCrypto = new ServerCrypto();
+            byte[] serverKey = Configuration.Keys.PUBLIC_SERVER_KEY, privateKey = new byte[32];
+            curve25519xsalsa20poly1305.crypto_box_keypair(serverKey, privateKey);
+
+            mClientCrypto = new ClientCrypto(serverKey);
+            mServerCrypto = new ServerCrypto(privateKey, serverKey);
 
             mAccount = new Account();
         }
