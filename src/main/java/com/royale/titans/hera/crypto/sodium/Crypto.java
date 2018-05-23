@@ -1,86 +1,70 @@
 package com.royale.titans.hera.crypto.sodium;
 
-import com.neilalexander.jnacl.crypto.curve25519xsalsa20poly1305;
-import com.neilalexander.jnacl.crypto.xsalsa20poly1305;
+import com.royale.titans.hera.Configuration;
+import com.royale.titans.hera.core.Client;
+import com.royale.titans.hera.crypto.sodium.nacl.CustomNaCl;
+import com.royale.titans.hera.crypto.sodium.nacl.KeyPair;
+import com.royale.titans.hera.utils.binary.ByteStream;
+import com.royale.titans.hera.utils.binary.Hex;
+import ove.crypto.digest.Blake2b;
 
-import java.util.Arrays;
+import java.util.Random;
 
-public abstract class Crypto {
-    protected int state = 0;
-    protected byte[] privateKey, serverKey, clientKey, sharedKey, sessionKey;
-    protected Nonce decryptNonce, encryptNonce;
+public class Crypto {
+    private static int keyLength = 32, nonceLength = 24, sessionLength = 24;
 
-    public Crypto(byte[] sk) {
-        serverKey = sk;
-        clientKey = new byte[32];
-        privateKey = new byte[32];
-    }
+    // A custom keypair used for en/decryption
+    private static KeyPair keyPair = new KeyPair();
 
-    public byte[] getSharedKey() {
-        return this.sharedKey;
-    }
+    // The 32-byte prefixed public key from cipher 10101
+    private static byte[] _10101_PublicKey = new byte[keyLength];
 
-    public void setSharedKey(byte[] sharedKey) {
-        this.sharedKey = sharedKey;
-    }
+    // The 24-byte prefixed nonce from plain 10101
+    private static byte[] _10101_Nonce = new byte[nonceLength];
 
-    public Nonce getEncryptNonce() {
-        return this.encryptNonce;
-    }
+    // The 24-byte prefixed nonce from plain 20103/20104
+    private static byte[] _20103_20104_Nonce = new byte[nonceLength];
 
-    protected void setEncryptNonce(Nonce encryptNonce) {
-        this.encryptNonce = encryptNonce;
-    }
+    // The 32-byte prefixed shared key from plain 20103/20104
+    private static byte[] _20103_20104_SharedKey = new byte[keyLength];
 
-    public Nonce getDecryptNonce() {
-        return this.decryptNonce;
-    }
-
-    protected void setDecryptNonce(Nonce decryptNonce) {
-        this.decryptNonce = encryptNonce;
-    }
-
-    public void setSessionKey(byte[] sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-    public byte[] getSessionKey() {
-        return this.sessionKey;
-    }
-
-    protected void beforeNm(byte[] serverKey) {
-        this.sharedKey = new byte[32];
-        curve25519xsalsa20poly1305.crypto_box_beforenm(sharedKey, serverKey, privateKey);
-    }
-
-    public byte[] encrypt(byte[] data, Nonce encryptNonce) {
-        if (encryptNonce == null) {
-            this.encryptNonce.increment();
-            encryptNonce = this.encryptNonce;
+    public static ByteStream decrypt(short id, ByteStream stream) {
+        switch (id) {
+            case 20100:
+            case 20103: {
+                return stream;
+            }
+            default: {
+                return stream;
+            }
         }
-        byte[] paddedData = new byte[32 + data.length];
-        byte[] encryptedData = new byte[32 + data.length];
-        System.arraycopy(data, 0, paddedData, 32, data.length);
-        xsalsa20poly1305.crypto_secretbox(encryptedData, paddedData, paddedData.length, encryptNonce.getBytes(),
-                sharedKey);
-        return Arrays.copyOfRange(encryptedData, 16, encryptedData.length);
     }
 
-    public byte[] decrypt(byte[] data, Nonce decryptNonce) {
-        if (decryptNonce == null) {
-            this.decryptNonce.increment();
-            decryptNonce = this.decryptNonce;
+    public static byte[] encrypt(short id, ByteStream stream) {
+        byte[] encrypted = null;
+        byte[] decrypted = null;
+
+        switch (id) {
+            case 10100: {
+                return encrypted = stream.array();
+            }
+            case 10101: {
+                Blake2b blake2b = Blake2b.Digest.newInstance();
+                blake2b.update(keyPair.pk);
+                blake2b.update(Configuration.Keys.PUBLIC_SERVER_KEY);
+                byte[] tmpNonce = blake2b.digest();
+
+                new Random().nextBytes(_10101_Nonce);
+
+                decrypted = Hex.concatBytes(Client.info.getSessionKey(), _10101_Nonce, stream.array());
+                byte[] tmp = CustomNaCl.createPublicBox(decrypted, tmpNonce, keyPair.sk, Configuration.Keys.PUBLIC_SERVER_KEY);
+                encrypted = Hex.concatBytes(keyPair.pk, tmp);
+
+                return encrypted;
+            }
+            default: {
+                return encrypted;
+            }
         }
-
-        byte[] c = new byte[16 + data.length];
-        byte[] m = new byte[c.length];
-        System.arraycopy(data, 0, c, 16, data.length);
-        if (xsalsa20poly1305.crypto_secretbox_open(m, c, c.length, decryptNonce.getBytes(), sharedKey) != 0)
-            return null;
-        return Arrays.copyOfRange(m, 32, m.length);
-    }
-
-    public int getState() {
-        return state;
     }
 }

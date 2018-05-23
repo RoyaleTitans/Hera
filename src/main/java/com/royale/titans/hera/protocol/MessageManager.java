@@ -1,6 +1,6 @@
 package com.royale.titans.hera.protocol;
 
-import com.royale.titans.hera.core.Client;
+import com.royale.titans.hera.crypto.sodium.Crypto;
 import com.royale.titans.hera.protocol.messages.server.KeepAliveServerMessage;
 import com.royale.titans.hera.protocol.messages.server.LoginFailedMessage;
 import com.royale.titans.hera.protocol.messages.server.LoginOkMessage;
@@ -13,7 +13,7 @@ public class MessageManager {
     public static PiranhaMessage receiveMessage(short id, ByteStream stream) {
         PiranhaMessage message = null;
 
-        ByteStream decrypted = ByteStream.wrap(Client.info.getClientCrypto().decryptPacket(id, stream.array()));
+        ByteStream decrypted = Crypto.decrypt(id, stream);
 
         switch (id) {
             case 20100: {
